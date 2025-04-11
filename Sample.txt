@@ -1,0 +1,27 @@
+Still issue not resolved, still seeing all 50 specs executed on each of the 12 nodes using above yml files.Can we integrate below code if useful  
+
+- name: Run Cypress tests in parallel
+        env:
+          CYPRESS_GROUP: ${{ matrix.runner-number }}
+          CYPRESS_PARALLEL: true
+        run: npx cypress run --record --key <your_cypress_cloud_key> --ci-build-id ${{ github.sha }} --parallel --group ${{ matrix.runner-number }}
+
+fix the issue and provide updated 
+
+
+
+Cypress Cloud automatically:
+
+Fetches the full list of specs.
+
+Distributes them intelligently across available nodes (12 in your case).
+
+Avoids duplicate executions.
+
+Cypress Cloud will now automatically detect all 50 spec files.
+
+Divide them smartly across 12 nodes.
+
+No duplication — each spec runs on only one node.
+
+Handles retries if configured in your project.
