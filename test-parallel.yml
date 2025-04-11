@@ -1,0 +1,98 @@
+name: "Parallel Automation Tests"
+run-name: "Run Automation Tests for ${{ inputs.environment }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: environment
+        description: "Choose the environment"
+        required: true
+      company-name:
+        description: "Enter company name"
+        type: string
+        required: false
+      admin-company-name:
+        description: "Enter admin company name"
+        type: string
+        required: false  
+      project-name:
+        type: choice
+        description: "Choose the project"
+        options:
+          - cfa
+          - cost_advisor
+          - perspectives
+
+env:
+  BASE_URL: ${{ vars.BASE_URL }}
+  CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+  USER_NAME: ${{ secrets.USER_NAME }}
+  USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+  COMPANY_NAME: ${{ inputs.company-name || vars.COMPANY_NAME }}
+  ADMIN_COMPANY_NAME: ${{ inputs.admin-company-name || vars.ADMIN_COMPANY_NAME }}
+  TERM: xterm
+
+jobs:
+  run:
+    name: Parallel Cypress Tests on ${{ inputs.project-name }}
+    runs-on: self-hosted-artemis-linux
+    environment: ${{ inputs.environment }}
+
+    strategy:
+      matrix:
+        containers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]  # Twelve parallel containers
+      fail-fast: false
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+  
+      - name: Debug Working Directory
+        run: |
+          echo "Current Working Directory: $(pwd)"
+          ls -R .
+
+      - name: Prepare Spec Paths
+        id: prepare_specs
+        run: |
+          if [ ${{ matrix.containers }} == 1 ]; then
+            SPEC="cypress/e2e/perspectives/standardstories/standardstories_uivalidation.cy.ts,cypress/e2e/perspectives/explorations/explore_create_screen_three.cy.ts,cypress/e2e/perspectives/foundations/foundations_search_and_copy.cy.ts,cypress/e2e/perspectives/datatables/member_lookup_screen.cy.ts,cypress/e2e/perspectives/admin/admin_role_section.cy.ts"
+          elif [ ${{ matrix.containers }} == 2 ]; then
+            SPEC="cypress/e2e/perspectives/stories/stories_edit_screen_three.cy.ts,cypress/e2e/perspectives/cohorts/cohort_create_screen_two.cy.ts,cypress/e2e/perspectives/explorations/explore_dashboard_screen.cy.ts,cypress/e2e/perspectives/cohorts/cohort_dashboard_screen.cy.ts,cypress/e2e/perspectives/admin/admin_company_permissions.cy.ts,cypress/e2e/perspectives/admin/admin_user_section.cy.ts"
+          elif [ ${{ matrix.containers }} == 3 ]; then
+            SPEC="cypress/e2e/perspectives/visualize/visualize_edit_screen.cy.ts,cypress/e2e/perspectives/benchmarks/benchmarks_edit_screen.cy.ts,cypress/e2e/perspectives/visualize/visualize_dashboard_screen.cy.ts,cypress/e2e/perspectives/platformsearch/platformsearch.cy.ts"
+          elif [ ${{ matrix.containers }} == 4 ]; then
+            SPEC="cypress/e2e/perspectives/explorations/explore_create_screen_two.cy.ts,cypress/e2e/perspectives/slices/slices_dashboard_screen.cy.ts,cypress/e2e/perspectives/datatables/members_screen.cy.ts"
+          elif [ ${{ matrix.containers }} == 5 ]; then
+            SPEC="cypress/e2e/perspectives/custom_measures/custom_measures_create_screen.cy.ts,cypress/e2e/perspectives/cohorts/cohort_create_screen.cy.ts,cypress/e2e/perspectives/slices/slices_loadassclice_screen.cy.ts,cypress/e2e/perspectives/datatables/rx_claims_screen.cy.ts"
+          elif [ ${{ matrix.containers }} == 6 ]; then
+            SPEC="cypress/e2e/perspectives/slices/slices_create_screen.cy.ts,cypress/e2e/perspectives/stories/stories_edit_screen.cy.ts,cypress/e2e/perspectives/datatables/medical_claim_lines_screen.cy.ts,cypress/e2e/perspectives/slices/slices_edit_screen.cy.ts"
+          elif [ ${{ matrix.containers }} == 7 ]; then
+            SPEC="cypress/e2e/perspectives/stories/stories_create_screen.cy.ts,cypress/e2e/perspectives/stories/stories_edit_screen_two.cy.ts,cypress/e2e/perspectives/library/library_screen.cy.ts,cypress/e2e/perspectives/foundations/foundations_dashboard_screen.cy.ts"  
+          elif [ ${{ matrix.containers }} == 8 ]; then
+            SPEC="cypress/e2e/perspectives/library/library_Filter.cy.ts,cypress/e2e/perspectives/globalfilters/globalfilters_create_screen.cy.ts,cypress/e2e/perspectives/stories/stories_dashboard_screen.cy.ts,cypress/e2e/perspectives/benchmarks/benchmarks_dashboard_screen.cy.ts"
+          elif [ ${{ matrix.containers }} == 9 ]; then
+            SPEC="cypress/e2e/perspectives/custom_measures/custom_measures_edit_screen.cy.ts,cypress/e2e/perspectives/cohorts/cohorts_edit_screen.cy.ts,cypress/e2e/perspectives/pagination/pagination.cy.ts"  
+          elif [ ${{ matrix.containers }} == 10 ]; then
+            SPEC="cypress/e2e/perspectives/explorations/explore_create_screen.cy.ts,cypress/e2e/perspectives/benchmarks/benchmarks_create_screen.cy.ts,cypress/e2e/perspectives/visualize/visualize_create_screen.cy.ts"  
+          elif [ ${{ matrix.containers }} == 11 ]; then
+            SPEC="cypress/e2e/perspectives/custom_breakdown/custom_breakdown_create.cy.ts,cypress/e2e/perspectives/home/custom_home.cy.ts,cypress/e2e/perspectives/explorations/explore_edit_screen.cy.ts"  
+          elif [ ${{ matrix.containers }} == 12 ]; then
+            SPEC="cypress/e2e/perspectives/custom_measures/custom_measures_edit_screen_two.cy.ts,cypress/e2e/perspectives/stories/stories_create_screen_second.cy.ts,cypress/e2e/perspectives/custom_breakdown/custom_breakdown_edit.cy.ts"
+          fi
+          echo "SPEC=$SPEC" >> $GITHUB_ENV
+
+      - name: Run Cypress Test on Node-${{ matrix.containers }}
+        uses: artemishealth/dionysus/.github/actions/run-cypress-job@main
+        with:
+          project-name: "${{ inputs.project-name }}"
+          continue_on_failure: "true"
+          node-id: "${{ matrix.containers }}"
+          custom-test-run: "--spec=${{ env.SPEC }}"
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          BASE_URL: ${{ vars.BASE_URL }}
+          USER_NAME: ${{ secrets.USER_NAME }}
+          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+          COMPANY_NAME: ${{ env.COMPANY_NAME }}

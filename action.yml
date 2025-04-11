@@ -1,0 +1,70 @@
+name: Run Sample Job
+description: Run Sample Job
+
+inputs:
+  project-name:
+    description: "Name of the project"
+    required: false
+  continue_on_failure:
+    description: "Flag for getting log on failure"
+    required: false
+    default: "false"
+  node-id:
+    description: "Unique node identifier for Cypress parallelization"
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Debug Initial Working Directory
+      shell: bash
+      run: |
+        echo "Initial Working Directory: $(pwd)"
+        ls -R .
+
+    - name: Set Up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install Cypress Pre-requirements
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libgtk2.0-0 \
+          libgtk-3-0 \
+          libgbm-dev \
+          libnotify-dev \
+          libnss3 \
+          libxss1 \
+          libasound2 \
+          libxtst6 \
+          xauth \
+          xvfb \
+          fonts-liberation \
+          libu2f-udev \
+          xdg-utils
+
+    - name: Install Headless Browser
+      shell: bash
+      run: |
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install
+
+    - name: Install Dependencies
+      shell: bash
+      run: |
+        npm ci
+
+    - name: Run Cypress Tests for ${{ inputs.project-name }}
+      continue-on-error: ${{ inputs.continue_on_failure == 'true' }}
+      shell: bash
+      run: |
+        xvfb-run npx cypress run --record \
+                                 --key "$CYPRESS_RECORD_KEY" \
+                                 --ci-build-id "${{ github.run_id }}" \
+                                 --group "Node-${{ inputs.node-id }}" \
+                                 --browser chrome \
+                                 --parallel

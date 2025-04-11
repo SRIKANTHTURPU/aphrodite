@@ -1,0 +1,72 @@
+name: "Run Regression Tests"
+run-name: "Run Automation Tests for ${{ inputs.environment }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: environment
+        description: "Choose the environment"
+        required: true
+      company-name:
+        description: "Enter company name"
+        type: string
+        required: false
+      admin-company-name:
+        description: "Enter admin company name"
+        type: string
+        required: false  
+      project-name:
+        type: choice
+        description: "Choose the project"
+        options:
+          - cfa
+          - cost_advisor
+          - perspectives
+
+env:
+  BASE_URL: ${{ vars.BASE_URL }}
+  CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+  CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
+  USER_NAME: ${{ secrets.USER_NAME }}
+  USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+  COMPANY_NAME: ${{ inputs.company-name || vars.COMPANY_NAME }}
+  ADMIN_COMPANY_NAME: ${{ inputs.admin-company-name || vars.ADMIN_COMPANY_NAME }}
+  TERM: xterm
+
+jobs:
+  run:
+    name: Parallel Cypress Tests on ${{ inputs.project-name }}
+    runs-on: self-hosted-artemis-linux
+    environment: ${{ inputs.environment }}
+
+    strategy:
+      matrix:
+        node: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      fail-fast: false
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Cache NPM
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Run Cypress Test (Node-${{ matrix.node }})
+        uses: artemishealth/dionysus/.github/actions/run-sample-job@main
+        with:
+          project-name: "${{ inputs.project-name }}"
+          continue_on_failure: "true"
+          node-id: "${{ matrix.node }}"
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
+          BASE_URL: ${{ vars.BASE_URL }}
+          USER_NAME: ${{ secrets.USER_NAME }}
+          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+          COMPANY_NAME: ${{ env.COMPANY_NAME }}
