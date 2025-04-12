@@ -52,6 +52,10 @@ jobs:
       - name: Find all spec files
         id: find-specs
         run: |
+          # Install find and jq if not already available
+          sudo apt-get update && sudo apt-get install -y findutils jq
+          
+          # Find all spec files and output as JSON array
           SPECS=$(find cypress/e2e -name "*.cy.ts" | jq -R -s -c 'split("\n")[:-1]')
           echo "SPECS=$SPECS" >> $GITHUB_OUTPUT
           
@@ -60,18 +64,25 @@ jobs:
         run: |
           TOTAL_NODES=12
           SPECS=${{ steps.find-specs.outputs.SPECS }}
-          MATRIX=$(node -e "
-            const specs = $SPECS;
-            const totalNodes = $TOTAL_NODES;
-            const matrix = {include: []};
-            for (let i = 0; i < totalNodes; i++) {
-              matrix.include.push({
-                node: (i + 1).toString(),
-                specs: specs.filter((_, index) => index % totalNodes === i)
-              });
-            }
-            console.log(JSON.stringify(matrix));
-          ")
+          
+          # Create Node.js script to process the specs
+          cat << 'EOF' > process-specs.js
+          const specs = $SPECS;
+          const totalNodes = $TOTAL_NODES;
+          const matrix = {include: []};
+          
+          for (let i = 0; i < totalNodes; i++) {
+            matrix.include.push({
+              node: (i + 1).toString(),
+              specs: specs.filter((_, index) => index % totalNodes === i)
+            });
+          }
+          
+          console.log(JSON.stringify(matrix));
+          EOF
+          
+          # Execute the script and output the matrix
+          MATRIX=$(node process-specs.js)
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
   run:
