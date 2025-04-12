@@ -62,9 +62,10 @@ runs:
       continue-on-error: ${{ inputs.continue_on_failure == 'true' }}
       shell: bash
       run: |
+        echo "Running tests on Node-${{ inputs.node-id }}"
         xvfb-run npx cypress run --record \
                                  --key "$CYPRESS_RECORD_KEY" \
                                  --ci-build-id "${{ github.run_id }}" \
+                                 --parallel \
                                  --group "Node-${{ inputs.node-id }}" \
-                                 --browser chrome \
-                                 --parallel
+                                 --browser chrome

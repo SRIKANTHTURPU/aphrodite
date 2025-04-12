@@ -13,13 +13,15 @@ module.exports = defineConfig({
     watchForFileChanges: false, // Disabled for CI
     downloadsFolder: "cypress/downloads",
     screenshotsFolder: 'cypress/screenshots',
+    videosFolder: 'cypress/videos',
     video: false,
     experimentalMemoryManagement: true,
+    experimentalInteractiveRunEvents: true,
     specPattern: 'cypress/e2e/perspectives/**/*.cy.{js,ts}',
 
     retries: {
       runMode: 1, // Retries in CLI mode
-      openMode: 1  // Retries in interactive mode
+      openMode: 0  // Disabled for CI
     },
 
     reporter: 'cypress-mochawesome-reporter',
@@ -69,6 +71,8 @@ module.exports = defineConfig({
           });
         },
       });
+
+      return config;
     },
   },
 });
