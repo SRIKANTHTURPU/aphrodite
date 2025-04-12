@@ -4,13 +4,13 @@ const { rm } = require('fs');
 require('dotenv').config();
 
 module.exports = defineConfig({
-  projectId: 'r8uvx7',
+  projectId: process.env.CYPRESS_PROJECT_ID || 'r8uvx7',
   defaultCommandTimeout: 60000,
   pageLoadTimeout: 60000,
 
   e2e: {
     testIsolation: false,
-    watchForFileChanges: true,
+    watchForFileChanges: false, // Disabled for CI
     downloadsFolder: "cypress/downloads",
     screenshotsFolder: 'cypress/screenshots',
     video: false,
@@ -29,7 +29,7 @@ module.exports = defineConfig({
       reportPageTitle: 'Automation Test Results',
       embeddedScreenshots: true,
       inline: true,
-      reportFilename: generateReportFilename(), // Dynamically generate the filename
+      reportFilename: generateReportFilename(),
       cdn: true,
       overwrite: false,
     },
@@ -77,7 +77,6 @@ function generateReportFilename() {
   const projectName = process.env.projectName;
   const currentDate = new Date();
 
-  // Format the timestamp
   const monthNames = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
@@ -89,11 +88,8 @@ function generateReportFilename() {
   const hour = currentDate.getHours();
   const minutes = String(currentDate.getMinutes()).padStart(2, '0');
   const ampm = hour >= 12 ? 'PM' : 'AM';
-
-  // Adjust hour for PM format
   const formattedHour = hour % 12 || 12;
 
-  // Generate filename based on the test directory config
   switch (projectName) {
     case 'perspectives':
       return `Perspectives-Report-${year}-${month}-${day}-${formattedHour}-${minutes}-${ampm}`;

@@ -58,7 +58,7 @@ runs:
       run: |
         npm ci
 
-    - name: Run Cypress Tests for ${{ inputs.project-name }}
+    - name: Run Cypress Tests
       continue-on-error: ${{ inputs.continue_on_failure == 'true' }}
       shell: bash
       run: |
