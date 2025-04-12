@@ -7,21 +7,22 @@ module.exports = defineConfig({
   projectId: process.env.CYPRESS_PROJECT_ID || 'r8uvx7',
   defaultCommandTimeout: 60000,
   pageLoadTimeout: 60000,
+  numTestsKeptInMemory: 5, // Reduce memory usage
 
   e2e: {
     testIsolation: false,
-    watchForFileChanges: false, // Disabled for CI
+    watchForFileChanges: false,
     downloadsFolder: "cypress/downloads",
     screenshotsFolder: 'cypress/screenshots',
     videosFolder: 'cypress/videos',
     video: false,
     experimentalMemoryManagement: true,
     experimentalInteractiveRunEvents: true,
-    specPattern: 'cypress/e2e/perspectives/**/*.cy.{js,ts}',
+    specPattern: 'cypress/e2e/**/*.cy.{js,ts}',
 
     retries: {
-      runMode: 1, // Retries in CLI mode
-      openMode: 0  // Disabled for CI
+      runMode: 1,
+      openMode: 0
     },
 
     reporter: 'cypress-mochawesome-reporter',

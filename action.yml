@@ -12,6 +12,9 @@ inputs:
   node-id:
     description: "Unique node identifier for Cypress parallelization"
     required: true
+  specs:
+    description: "JSON array of specs to run"
+    required: true
 
 runs:
   using: 'composite'
@@ -45,7 +48,8 @@ runs:
           xvfb \
           fonts-liberation \
           libu2f-udev \
-          xdg-utils
+          xdg-utils \
+          jq
 
     - name: Install Headless Browser
       shell: bash
@@ -58,14 +62,32 @@ runs:
       run: |
         npm ci
 
+    - name: Prepare Specs
+      id: prepare-specs
+      shell: bash
+      run: |
+        SPECS_JSON='${{ inputs.specs }}'
+        echo "SPECS_JSON: $SPECS_JSON"
+        SPECS=$(echo "$SPECS_JSON" | jq -r 'join(",")')
+        echo "SPECS: $SPECS"
+        echo "SPECS=$SPECS" >> $GITHUB_ENV
+
     - name: Run Cypress Tests
       continue-on-error: ${{ inputs.continue_on_failure == 'true' }}
       shell: bash
       run: |
         echo "Running tests on Node-${{ inputs.node-id }}"
+        echo "Specs to run: $SPECS"
+        
+        if [ -z "$SPECS" ]; then
+          echo "No specs found for this node. Exiting."
+          exit 0
+        fi
+        
         xvfb-run npx cypress run --record \
                                  --key "$CYPRESS_RECORD_KEY" \
                                  --ci-build-id "${{ github.run_id }}" \
                                  --parallel \
                                  --group "Node-${{ inputs.node-id }}" \
-                                 --browser chrome
+                                 --browser chrome \
+                                 --spec "$SPECS"

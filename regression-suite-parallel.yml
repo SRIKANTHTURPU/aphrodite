@@ -35,21 +35,57 @@ env:
   TERM: xterm
 
 jobs:
+  discover-specs:
+    name: Discover Specs
+    runs-on: self-hosted-artemis-linux
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Find all spec files
+        id: find-specs
+        run: |
+          SPECS=$(find cypress/e2e -name "*.cy.ts" | jq -R -s -c 'split("\n")[:-1]')
+          echo "SPECS=$SPECS" >> $GITHUB_OUTPUT
+          
+      - name: Set matrix for parallel jobs
+        id: set-matrix
+        run: |
+          TOTAL_NODES=12
+          SPECS=${{ steps.find-specs.outputs.SPECS }}
+          MATRIX=$(node -e "
+            const specs = $SPECS;
+            const totalNodes = $TOTAL_NODES;
+            const matrix = {include: []};
+            for (let i = 0; i < totalNodes; i++) {
+              matrix.include.push({
+                node: (i + 1).toString(),
+                specs: specs.filter((_, index) => index % totalNodes === i)
+              });
+            }
+            console.log(JSON.stringify(matrix));
+          ")
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+
   run:
     name: Parallel Cypress Tests on ${{ inputs.project-name }}
+    needs: discover-specs
     runs-on: self-hosted-artemis-linux
     environment: ${{ inputs.environment }}
-
     strategy:
-      matrix:
-        nodes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      matrix: ${{ fromJson(needs.discover-specs.outputs.matrix) }}
       fail-fast: false
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Important for Cypress to get full git history
 
       - name: Cache NPM
         uses: actions/cache@v3
@@ -61,12 +97,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Run Cypress Tests (Node-${{ matrix.nodes }})
+      - name: Run Cypress Tests (Node-${{ matrix.node }})
         uses: artemishealth/dionysus/.github/actions/run-sample-job@main
         with:
           project-name: "${{ inputs.project-name }}"
           continue_on_failure: "true"
-          node-id: "${{ matrix.nodes }}"
+          node-id: "${{ matrix.node }}"
+          specs: ${{ toJson(matrix.specs) }}
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
