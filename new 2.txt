@@ -1,0 +1,44 @@
+Goal: Automate login → add item to cart → checkout → verify order
+Steps:
+"Generate Playwright code to simulate login via username/password on the /login page."
+"Add steps to search for a product, select it, and add it to the cart."
+"Simulate completing the checkout using mock payment API responses."
+"Validate confirmation page and check for order ID in backend DB via API."
+
+
+
+Goal: Identify and rerun flaky tests based on trends
+Steps:
+"Analyze the last 10 test runs and extract any test case with inconsistent pass/fail status."
+"Generate a list of flaky tests with timestamps and failure logs."
+"Automatically rerun flaky tests 3 times and record average success rate."
+"If flaky rate > 50%, tag as 'needs investigation' and notify via Slack."
+
+Dynamically decide which tests to run based on PR content
+Steps:
+"Read a GitHub PR diff and identify which modules or features were touched."
+"Map touched modules to their associated E2E test files."
+"Run only those E2E tests in the CI job and skip others."
+"Post test summary to the PR with pass/fail status and code coverage delta."
+
+
+Evaluate how well your tests cover your codebase
+Steps:
+"Scan the frontend codebase for all public components and exposed API routes."
+"Cross-reference each component with test files in /e2e/ and /integration/."
+"Generate a coverage matrix showing what is tested and what is missing."
+"Suggest top 5 high-risk untested components and generate test case outlines."
+
+Auto-suggest regression cases based on recent commits
+Steps:
+"Analyze the latest 10 commits and summarize the affected modules."
+"Compare against existing tests and find coverage gaps."
+"Generate new regression test case prompts for changed business logic."
+"Inject those into test suites and tag them as ‘commit-driven regression’."
+
+Create a smoke test flow that runs in production post-deploy
+Steps:
+"Generate a lightweight, non-intrusive E2E test flow to run against canary endpoints."
+"Include uptime check, homepage load, login test, and key page checks."
+"Configure the test suite to run after canary deploy in CI/CD."
+"If failures occur, trigger rollback via the deployment API and alert team.

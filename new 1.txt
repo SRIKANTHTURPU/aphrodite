@@ -1,0 +1,30 @@
+
+
+Low-Level Tasks
+1.Convert the following Gherkin scenario into a Cypress test in JavaScript.
+2.Write Cypress code to test the checkout process on an e-commerce site, up to payment
+3.Add logic to simulate a 500 server error during the login process using Cypress
+4.Generate a WireMock config to mock GET and POST requests for /api/products.
+5.Generate a GitHub Actions workflow that runs Cypress tests on every push to main.
+6.Tag tests based on priority and feature set based on file name and content using regex rules
+7.Analyze these failed test logs and suggest common causes and retry steps.
+
+
+
+1.Generate a Cypress test that registers a new user, logs in, adds an item to the cart, and completes the checkout using a mock payment API
+2.Create a test that verifies the value entered in the UI matches the one persisted in the PostgreSQL database.
+3.Write an automated test to fetch products via API and ensure those same products are displayed on the product listing page in the UI
+4.Generate a data-driven test for the registration form using 10 different name/email/password combinations from a CSV file.
+5.Create a Cypress test that follows a different path if the user role is 'admin' vs 'user', based on the login API response
+6.Write E2E tests to validate that users with 'admin' can access the admin dashboard, and regular users are redirected to the homepage
+7.Generate a Playwright test that simulates a session expiration and verifies that the app refreshes the token and retries the request
+8.Create a script that emails a summary of failed tests (from JUnit or Allure reports) to the QA team daily
+9.Analyze recent Cypress test failures and classify them as 'UI regression', 'timeout', or 'assertion logic error' based on stack traces
+10.Write a GitHub Action step that only runs tests related to changed files under /features/cart/.
+11.Create a pipeline job that runs smoke tests on staging after a successful deployment and sends a Slack alert if tests fail.
+12.Analyze past 10 test runs and tag tests with intermittent failures (failure rate between 30–70%) as 'flaky'.
+
+Select appropriate tools for E2E testing such as Selenium WebDriver, Cypress, Puppeteer, etc., depending on the application's technology stack and requirements.
+
+1.Create an automated regression suite using cypress with BDD for the open project in VS Code
+2.
