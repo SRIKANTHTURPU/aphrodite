@@ -1,0 +1,7 @@
+Your AiDE Agent Token for Giga Brain has been generated.
+
+Base URL: https://aide-sdlc-backend.imagine.tech/api/v1/brownfield
+
+Model ID: giga-brain
+
+Enable extended thinking: False
