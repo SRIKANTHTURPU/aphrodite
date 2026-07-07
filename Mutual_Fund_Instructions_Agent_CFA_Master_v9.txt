@@ -72,26 +72,26 @@ FUND CLASSIFICATION:
 +--+--------------------------------+----------+------+---------+------+------+------+-----+
 |# | Fund Name                      | Category | Type | SIP/Mo  | 5th  | 15th | 25th | ER  |
 +--+--------------------------------+----------+------+---------+------+------+------+-----+
-|1 | Bandhan Small Cap Fund         | Small Cap| CORE | Rs 7,000|2,500 |2,000 |2,500 |0.34%|
-|2 | Nippon India Small Cap Fund    | Small Cap| SAT  | Rs 6,000|2,500 |1,500 |2,000 |0.41%|
-|3 | HDFC Midcap Opportunities Fund | Mid Cap  | CORE | Rs 7,000|2,500 |2,500 |2,000 |0.72%|
-|4 | Edelweiss Midcap Fund          | Mid Cap  | SAT  | Rs 5,000|2,000 |1,500 |1,500 |0.48%|
-|5 | Nippon India Large Cap Fund    | Large Cap| CORE | Rs 7,000|3,000 |2,000 |2,000 |0.65%|
-|6 | Parag Parikh Flexi Cap Fund    | Flexi Cap| CORE | Rs 8,000|4,000 |2,000 |2,000 |0.53%|
-|7 | ICICI Pru India Opp. Fund      | Thematic | SAT  | Rs 5,000|4,000 |1,000 |  —  |0.57%|
-|8 | HDFC Flexi Cap Fund            | Flexi Cap| SAT  | Rs 5,000|  —  |2,500 |2,500 |0.75%|
+|1 | Bandhan Small Cap Fund         | Small Cap| CORE | Rs 7,500|2,500 |2,500 |2,500 |0.34%|
+|2 | Nippon India Small Cap Fund    | Small Cap| SAT  | Rs 7,000|2,500 |2,500 |2,000 |0.41%|
+|3 | HDFC Midcap Opportunities Fund | Mid Cap  | CORE | Rs 7,500|2,500 |2,500 |2,500 |0.72%|
+|4 | Edelweiss Midcap Fund          | Mid Cap  | SAT  | Rs 6,000|2,500 |2,000 |1,500 |0.48%|
+|5 | Nippon India Large Cap Fund    | Large Cap| CORE | Rs 6,000|2,500 |1,500 |2,000 |0.65%|
+|6 | Parag Parikh Flexi Cap Fund    | Flexi Cap| CORE | Rs 6,000|2,500 |1,500 |2,000 |0.53%|
+|7 | ICICI Pru India Opp. Fund      | Thematic | SAT  | Rs 5,000|2,500 |1,500 |1,000 |0.57%|
+|8 | HDFC Flexi Cap Fund            | Flexi Cap| SAT  | Rs 5,000|2,500 |1,000 |1,500 |0.75%|
 +--+--------------------------------+----------+------+---------+------+------+------+-----+
    TOTAL                                              Rs 50,000|20,000|15,000|15,000
 
 CATEGORY ALLOCATION (targets):
-Small Cap (2 funds)        : 26% | Mid Cap (2 funds)   : 24%
-Large Cap (1 fund)         : 14% | Flexi Cap (2 funds) : 26%
+Small Cap (2 funds)        : 29% | Mid Cap (2 funds)   : 27%
+Large Cap (1 fund)         : 12% | Flexi Cap (2 funds) : 22%
 Thematic/Opp. (1 fund)     : 10%
 
 SIP STRUCTURE:
 - Total Rs 50,000/month across 3 dates
 - No single fund > 20% of total monthly SIP
-- Core/stable funds spread on 5th; mid/small on 15th and 25th
+- Funds spread on 5th,15th and 25th
 
 =================================================================
 SECTION 3 — HISTORICAL DECISIONS LOG
@@ -112,10 +112,9 @@ STCG 20% if < 1 year. LTCG 12.5% if > 1 year (Rs 1.25L exempt).
 | Fund Stopped              | Replaced By            | Hard Reason               |
 +---------------------------+------------------------+---------------------------+
 | Quant Small Cap Fund      | Nippon India Small Cap | ER 0.71%, volatile        |
-| Motilal Oswal Midcap      | Edelweiss Midcap       | -8.53% 1Y, ER 0.82%      |
+| Motilal Oswal Midcap      | Edelweiss Midcap       | -8.53% 1Y, ER 0.82%       |
 | MO Large & Mid Cap        | ICICI Pru India Opp.   | Overlap, SD 19.10         |
-| Franklin U.S. Opp. FoF    | HDFC Flexi Cap         | 5Y CAGR 13.9%, suspended |
-| ICICI Pru Infrastructure  | ICICI Pru India Opp.   | Alpha -7.18, 3 CFA fails  |
+| Franklin U.S. Opp. FoF    | HDFC Flexi Cap         | 5Y CAGR 13.9%, suspended  |
 | ICICI Pru Manufacturing   | ICICI Pru India Opp.   | #26/48, new mgr Mar 2026  |
 +---------------------------+------------------------+---------------------------+
 
@@ -383,7 +382,7 @@ TIER 1 (highest): AMC official website
 TIER 2: AMFI (amfiindia.com)
   → Official category, NAV, AUM. Wins on classification conflicts.
 
-TIER 3: Value Research / Morningstar India
+TIER 3: Value Research / Morningstar India /Powerup
   → Alpha, Sharpe, Sortino, star ratings, monthly NAV history.
   When Tier 3 sources conflict: use the longer calculation window.
 
@@ -513,7 +512,7 @@ STANDARD DEFINITION (fund age >= 3 years):
 
   Source: Value Research (apply "Direct" plan filter explicitly
   before reading any rank). INDmoney (confirm Direct view active).
-  Re-verify at every review — never rely on stored data.
+  Re-verify at every review — never rely on stored data. Powerup oe Economic Times
 
 FUND AGE < 3 YEARS (incomplete history rule):
   If a fund has less than 3 years of return history:
@@ -636,7 +635,7 @@ CONCENTRATION OVERRIDE: If any single stock appears in 3+ funds
 AND exceeds 10% of total portfolio weight → concentration risk.
 Reduce the satellite fund with highest ER or weakest metrics.
 
-Source: mfxray.in or Value Research Portfolio Overlap tool.
+Source: mfxray.in or Value Research Portfolio Overlap tool or https://1finance.co.in/, https://www.dezerv.in/, https://www.advisorkhoj.com/
 
 6.4 CORRELATION RULE WITH FALLBACK LADDER
 ------------------------------------------------------
